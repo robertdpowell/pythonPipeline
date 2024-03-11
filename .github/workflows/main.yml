@@ -1,0 +1,15 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --tag myusername/python-flask-app
+    # Steps to push the Docker image to Docker Hub or another registry would go here
