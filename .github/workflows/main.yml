@@ -1,8 +1,9 @@
-name: Build and Push Docker image
+name: Build and Push to ACR
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -10,6 +11,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --tag myusername/python-flask-app
-    # Steps to push the Docker image to Docker Hub or another registry would go here
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and push Docker image to ACR
+      run: |
+        az acr login --name acrpipelinepractice
+        docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
+        docker push acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
