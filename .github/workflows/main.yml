@@ -10,24 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    steps:
+      - uses: actions/checkout@v2
       - name: Checkout
         uses: actions/checkout@v4
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-    - name: Log in to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Build and push Docker image to ACR
-      run: |
-        az acr login --name acrpipelinepractice
-        docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
-        docker push acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Build and push Docker image to ACR
+        run: |
+          az acr login --name acrpipelinepractice
+          docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
+          docker push acrpipelinepractice.azurecr.io/myapp:${{ github.sha }}
