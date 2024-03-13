@@ -26,11 +26,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          az acr login --name acrpipelinepractice
           docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
 
       - name: Push Docker image to ACR
         run: |
+          az acr login --name acrpipelinepractice
           docker push acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
 
       - name: Create and push git tag
