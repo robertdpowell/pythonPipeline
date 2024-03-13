@@ -26,7 +26,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Your SonarCloud token
         with:
           args: >
-            -Dsonar.projectKey=my_project_key
+            -Dsonar.projectKey=robertdpowell_pythonpipeline
             -Dsonar.organization=robertdpowell
             -Dsonar.sources=.
             
