@@ -25,7 +25,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Used by SonarCloud to create checks on the GitHub pull request
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Your SonarCloud token
         with:
-          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=my_project_key
+            -Dsonar.organization=my_organization_key
+            -Dsonar.sources=.
+            
 
       - name: Log in to Azure
         uses: azure/login@v1
