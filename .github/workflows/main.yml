@@ -19,6 +19,14 @@ jobs:
         id: version
         run: echo "VERSION_TAG=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Used by SonarCloud to create checks on the GitHub pull request
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Your SonarCloud token
+        with:
+          projectBaseDir: .
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
@@ -29,7 +37,6 @@ jobs:
           docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
 
       - name: Scan the Docker image with Trivy
-        id: trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}'
