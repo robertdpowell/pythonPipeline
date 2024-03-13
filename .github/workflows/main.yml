@@ -24,10 +24,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build and push Docker image to ACR
+      - name: Build Docker image
         run: |
           az acr login --name acrpipelinepractice
           docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
+
+      - name: Push Docker image to ACR
+        run: |
           docker push acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
 
       - name: Create and push git tag
