@@ -26,7 +26,4 @@ jobs:
 
           comment_summary_in_pr: true
 
-          #
-          # Licenses
-          # https://spdx.org/licenses/
           license_check: false
