@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  static-analysis:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL'
 
-  analyze:
+  code-scanning:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
