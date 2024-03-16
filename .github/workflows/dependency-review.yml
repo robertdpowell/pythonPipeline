@@ -19,11 +19,5 @@ jobs:
 
           vulnerability_check: true
           fail_on_severity: 'high'
-          fail_on_scopes:
-            - 'runtime'
-            - 'development'
-            - 'unknown'
-
           comment_summary_in_pr: true
-
           license_check: false
