@@ -40,3 +40,13 @@ jobs:
           git tag ${{ env.VERSION_TAG }}
           git push origin ${{ env.VERSION_TAG }}
 
+
+      - name: Deploy to Azure Container Instances
+        uses: Azure/aci-deploy@v1.1.3
+        with:
+          resource-group: pipeline-practice
+          dns-name-label: myapp-pipeline-practice
+          image: acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
+          registry-login-server: acrpipelinepractice.azurecr.io
+          name: myapp
+          location: uksouth
