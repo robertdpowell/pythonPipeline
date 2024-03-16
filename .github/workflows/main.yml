@@ -29,12 +29,9 @@ jobs:
             -Dsonar.projectKey=robertdpowell_pythonpipeline
             -Dsonar.organization=robertdpowell
             -Dsonar.sources=.
+            -Dsonar.qualitygate.wait=true
+            
 
-      - name: Check Quality Gate
-        uses: sonarsource/sonarcloud-quality-gate-action@master
-        with:
-          sonarToken: ${{ secrets.SONAR_TOKEN }}
-          projectKey: robertdpowell_pythonpipeline
 
       - name: Log in to Azure
         uses: azure/login@v1
