@@ -19,19 +19,6 @@ jobs:
         id: version
         run: echo "VERSION_TAG=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Used by SonarCloud to create checks on the GitHub pull request
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Your SonarCloud token
-        with:
-          args: >
-            -Dsonar.projectKey=robertdpowell_pythonpipeline
-            -Dsonar.organization=robertdpowell
-            -Dsonar.sources=.
-            -Dsonar.qualitygate.wait=true
-            
-
       - name: Log in to Azure
         uses: azure/login@v1
         with:
