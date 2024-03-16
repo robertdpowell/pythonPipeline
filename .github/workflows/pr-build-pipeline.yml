@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  static-analysis:
+  static-code-analysis:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +26,9 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.qualitygate.wait=true
 
+  image-scanning:
+    runs-on: ubuntu-latest
+    steps:
       - name: Build Docker image
         run: |
           docker build . -t myapp:pr-check
@@ -39,7 +42,7 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL'
 
-  code-scanning:
+  codeql-analysis:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
