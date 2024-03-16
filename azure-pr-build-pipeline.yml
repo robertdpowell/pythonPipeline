@@ -1,0 +1,43 @@
+pr:
+  branches:
+    include:
+    - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  sonarCloudEndpointName: 'SC'
+  sonarCloudOrganization: 'robertdpowell'
+  sonarCloudProjectKey: 'robertdpowell_pythonpipeline'
+  sonarCloudProjectName: 'PythonPipeline'
+  dockerImageName: 'myapp:pr-check'
+
+stages:
+- stage: SonarCloud-Scan & Trivy-Scan
+  displayName: 'SonarCloud-Scan & Trivy-Scan'
+  jobs:
+    - job: SonarCloud-Scan
+      displayName: 'SonarCloud Scan'
+      steps:
+      - task: SonarCloudPrepare@1
+        inputs:
+          SonarCloud: '$(sonarCloudEndpointName)'
+          organization: '$(sonarCloudOrganization)'
+          scannerMode: 'CLI'
+          configMode: 'manual'
+          cliProjectKey: '$(sonarCloudProjectKey)'
+          cliSources: '.'
+
+      - task: SonarCloudAnalyze@1
+        inputs:
+          SonarCloud: '$(sonarCloudEndpointName)'
+
+      - task: SonarCloudPublish@1
+        inputs:
+          pollingTimeoutSec: '300'
+
+
+
+
+
