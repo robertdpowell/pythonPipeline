@@ -32,7 +32,6 @@ jobs:
             -Dsonar.qualitygate.wait=true
             
 
-
       - name: Log in to Azure
         uses: azure/login@v1
         with:
