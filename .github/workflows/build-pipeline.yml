@@ -48,5 +48,7 @@ jobs:
           dns-name-label: myapp-pipeline-practice
           image: acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
           registry-login-server: acrpipelinepractice.azurecr.io
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: myapp
           location: uksouth
