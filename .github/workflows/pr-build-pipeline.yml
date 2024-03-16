@@ -1,9 +1,8 @@
-name: Build, Tag and Push to ACR
+name: PR Checks
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -14,10 +13,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate version tag
-        id: version
-        run: echo "VERSION_TAG=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -30,35 +25,49 @@ jobs:
             -Dsonar.organization=robertdpowell
             -Dsonar.sources=.
             -Dsonar.qualitygate.wait=true
-            
-
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build Docker image
         run: |
-          docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
+          docker build . -t myapp:pr-check
 
       - name: Scan the Docker image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}'
+          image-ref: 'myapp:pr-check'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           severity: 'CRITICAL'
 
-      - name: Push Docker image to ACR
-        run: |
-          az acr login --name acrpipelinepractice
-          docker push acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
+  analyze:
+    name: Analyze
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
 
-      - name: Create and push git tag
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "GitHub Action"
-          git tag ${{ env.VERSION_TAG }}
-          git push origin ${{ env.VERSION_TAG }}
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
 
