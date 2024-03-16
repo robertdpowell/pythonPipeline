@@ -2,9 +2,6 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-def unused_variable():
-    unused_var = "This variable is not used anywhere"
-    return "Hello, World!!!"
 
 # Simple endpoint returning a welcome message
 @app.route('/')
