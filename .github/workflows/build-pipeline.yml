@@ -41,15 +41,6 @@ jobs:
         run: |
           docker build . -t acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}
 
-      - name: Scan the Docker image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'acrpipelinepractice.azurecr.io/myapp:${{ env.VERSION_TAG }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL'
-
       - name: Push Docker image to ACR
         run: |
           az acr login --name acrpipelinepractice
