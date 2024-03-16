@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import requests
 
 app = Flask(__name__)
 
@@ -8,32 +7,29 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World from Flask!'
 
-
-# A potentially vulnerable endpoint that echoes user input
+# A safe echo endpoint that only echoes back safe characters
 @app.route('/echo', methods=['POST'])
 def echo():
-    data = request.get_json()
-    user_input = data.get('input')
+    data = request.get_json(force=True, silent=True) or {}
+    user_input = data.get('input', '')
+    # Simple validation to ensure that user_input only contains alphanumeric characters and spaces
+    if not user_input.isalnum() and not user_input.replace(' ', '').isalnum():
+        return jsonify({"error": "Invalid input"}), 400
     return jsonify({"echo": user_input})
 
 # An endpoint that fetches an external API (use a well-known API for demonstration)
 @app.route('/external-api')
 def external_api():
-    response = requests.get('https://api.publicapis.org/entries')
-    return jsonify(response.json())
+    response = requests.get('https://api.publicapis.org/entries', timeout=5)
+    # Basic error handling
+    if response.ok:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Unable to fetch data from external API"}), 500
 
-# Endpoint with a deliberate security flaw for demonstration purposes
-@app.route('/insecure')
-def insecure():
-    user_id = request.args.get('id')
-    # Pretend we're crafting a SQL query without proper sanitization
-    query = "SELECT * FROM users WHERE id = " + user_id
-    # This line is for illustration only and does not execute any SQL
-    return "Executing query: " + query
-
-# Include a function with an unused import and variable to see if SonarCloud picks it up
-import os
-unused_variable = "I am not used anywhere"
+# Remove the insecure endpoint and the unused code to tidy up the application
+# ...
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    # Disabling debug mode for production
+    app.run(host='0.0.0.0')
