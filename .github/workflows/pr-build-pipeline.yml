@@ -6,6 +6,7 @@ on:
 
 jobs:
   static-analysis:
+    name: SonarCloud-Scan & Trivy-Scan
     runs-on: ubuntu-latest
 
     steps:
@@ -40,7 +41,7 @@ jobs:
           severity: 'CRITICAL'
 
   code-scanning:
-    name: Analyze
+    name: CodeQL-Analysis
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
