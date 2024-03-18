@@ -6,7 +6,6 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-
 variables:
   sonarCloudEndpointName: 'SC'
   sonarCloudOrganization: 'robertdpowell'
