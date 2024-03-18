@@ -6,7 +6,6 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-
 variables:
   sonarCloudEndpointName: 'SC'
   sonarCloudOrganization: 'robertdpowell'
@@ -15,7 +14,7 @@ variables:
   dockerImageName: 'myapp:pr-check'
 
 stages:
-- stage: SonarCloudScan_Trivy-Scan
+- stage: SonarCloudScan_TrivyScan
   displayName: 'SonarCloud-Scan & Trivy-Scan'
   jobs:
     - job: SonarCloudScan
