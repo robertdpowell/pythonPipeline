@@ -4,7 +4,7 @@ pr:
     - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+    name: 'pipeline-practice-self-hosted'
 
 variables:
   sonarCloudEndpointName: 'SC'
