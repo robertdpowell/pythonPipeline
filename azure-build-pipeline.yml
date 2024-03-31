@@ -17,6 +17,11 @@ stages:
     steps:
     - checkout: self
 
+    - bash: |
+        echo "##vso[task.setvariable variable=versionTag]$(date '+%Y%m%d.%H%M%S')"
+      name: generateVersionTag
+      displayName: 'Generate version tag'
+
     - script: |
         docker build . -t $(registryName).azurecr.io/$(imageName):$(versionTag)
       displayName: 'Build the Docker image'
