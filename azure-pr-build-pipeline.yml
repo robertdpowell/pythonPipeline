@@ -20,11 +20,6 @@ stages:
     - job: SonarCloudScan
       displayName: 'SonarCloud Scan'
       steps:
-      - script: |
-          # Find the sonar-scanner's Java executable and set execute permissions
-          chmod 755 $(Agent.ToolsDirectory)/sonar-scanner*/jre/bin/java
-        displayName: 'Set Execute Permissions for SonarScanner Java'
-
       - task: SonarCloudPrepare@1
         inputs:
           SonarCloud: '$(sonarCloudEndpointName)'
