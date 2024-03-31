@@ -14,7 +14,6 @@ variables:
   dockerImageName: 'myapp:pr-check'
 
 stages:
-stages:
 - stage: SonarCloudScan_TrivyScan
   displayName: 'SonarCloud-Scan & Trivy-Scan'
   jobs:
