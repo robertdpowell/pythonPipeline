@@ -14,6 +14,7 @@ variables:
   dockerImageName: 'myapp:pr-check'
 
 stages:
+stages:
 - stage: SonarCloudScan_TrivyScan
   displayName: 'SonarCloud-Scan & Trivy-Scan'
   jobs:
@@ -21,11 +22,9 @@ stages:
       displayName: 'SonarCloud Scan'
       steps:
       - script: |
-          # Determine JAVA_HOME dynamically and export it
-          JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-          echo "##vso[task.setvariable variable=JAVA_HOME]$JAVA_HOME"
-          echo "JAVA_HOME set to $JAVA_HOME"
-        displayName: 'Set JAVA_HOME'
+          # Find the sonar-scanner's Java executable and set execute permissions
+          chmod 755 $(Agent.ToolsDirectory)/sonar-scanner*/jre/bin/java
+        displayName: 'Set Execute Permissions for SonarScanner Java'
 
       - task: SonarCloudPrepare@1
         inputs:
@@ -43,3 +42,4 @@ stages:
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
+
