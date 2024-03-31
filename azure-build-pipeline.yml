@@ -1,0 +1,55 @@
+pr:
+  branches:
+    include:
+    - main
+
+pool:
+  name: 'pipeline-practice-self-hosted'
+
+variables:
+  - group: pipeline-practice
+
+stages:
+- stage: BuildAndPush
+  jobs:
+  - job: BuildAndPushImage
+    displayName: 'Build, Tag, and Push Docker Image to ACR'
+    steps:
+    - checkout: self
+
+    - script: |
+        docker build . -t $(registryName).azurecr.io/$(imageName):$(versionTag)
+      displayName: 'Build Docker image'
+
+    - script: |
+        echo $(registryPassword) | docker login $(registryName).azurecr.io --username $(registryUsername) --password-stdin
+        docker push $(registryName).azurecr.io/$(imageName):$(versionTag)
+      displayName: 'Push Docker image to ACR'
+
+    - script: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Azure Pipeline"
+        git tag $(versionTag)
+        git push origin $(versionTag)
+      displayName: 'Create and push git tag'
+
+- stage: DeployToACI
+  jobs:
+  - job: DeployImageToACI
+    displayName: 'Deploy Docker Image to Azure Container Instances'
+    steps:
+    - script: |
+        az login --service-principal -u $(registryUsername) -p $(registryPassword) --tenant <TenantID>
+        az container create \
+          --resource-group $(resourceGroup) \
+          --name $(aciName) \
+          --image $(registryName).azurecr.io/$(imageName):$(versionTag) \
+          --dns-name-label $(dnsNameLabel) \
+          --registry-login-server $(registryName).azurecr.io \
+          --registry-username $(registryUsername) \
+          --registry-password $(registryPassword) \
+          --location $(location)
+      displayName: 'Deploy Docker image to ACI'
+    env:
+      AZURE_CREDENTIALS: $(AZURE_CREDENTIALS)
+
