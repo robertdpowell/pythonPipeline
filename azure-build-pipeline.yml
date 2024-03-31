@@ -50,6 +50,6 @@ stages:
           --registry-password $(registryPassword) \
           --location $(location)
       displayName: 'Deploy Docker image to ACI'
-    env:
-      AZURE_CREDENTIALS: $(AZURE_CREDENTIALS)
+      env:
+        AZURE_CREDENTIALS: $(AZURE_CREDENTIALS)
 
