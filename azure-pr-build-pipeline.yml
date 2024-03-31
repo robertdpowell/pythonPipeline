@@ -4,7 +4,7 @@ pr:
     - main
 
 pool:
-    name: 'pipeline-practice-self-hosted'
+  name: 'pipeline-practice-self-hosted'
 
 variables:
   sonarCloudEndpointName: 'SC'
@@ -20,6 +20,13 @@ stages:
     - job: SonarCloudScan
       displayName: 'SonarCloud Scan'
       steps:
+      - script: |
+          # Determine JAVA_HOME dynamically and export it
+          JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+          echo "##vso[task.setvariable variable=JAVA_HOME]$JAVA_HOME"
+          echo "JAVA_HOME set to $JAVA_HOME"
+        displayName: 'Set JAVA_HOME'
+
       - task: SonarCloudPrepare@1
         inputs:
           SonarCloud: '$(sonarCloudEndpointName)'
@@ -36,8 +43,3 @@ stages:
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
-
-
-
-
-
