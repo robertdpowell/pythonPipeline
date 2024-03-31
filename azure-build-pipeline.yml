@@ -19,7 +19,7 @@ stages:
 
     - script: |
         docker build . -t $(registryName).azurecr.io/$(imageName):$(versionTag)
-      displayName: 'Build Docker image'
+      displayName: 'Build the Docker image'
 
     - script: |
         echo $(registryPassword) | docker login $(registryName).azurecr.io --username $(registryUsername) --password-stdin
